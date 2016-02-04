@@ -10,18 +10,21 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) throws IOException {
         List<Student> students = students("data-2016.csv");
-        apriori(students, 0.05);
+        apriori(students, 0.1);
     }
 
     public static void apriori(List<Student> students, double support) {
         List<List<String>> courses = courses(students);
         int n = 1;
         while (!courses.isEmpty()) {
+            long start = System.currentTimeMillis();
             courses = generate(courses).parallelStream().filter(course -> (support(students, course) >= support))
                     .collect(Collectors.toList());
+            long end = System.currentTimeMillis();
+            long time = end - start;
 
             // Print the amount of combinations of size n
-            System.out.println(courses.size() + " combinations of size " + n);
+            System.out.println(courses.size() + " combinations of size " + n + ", calculation took " + time + " milliseconds");
             n++;
         }
     }
