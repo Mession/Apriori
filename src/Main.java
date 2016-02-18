@@ -13,7 +13,32 @@ public class Main {
         List<Student> students = students("data-2016.csv");
         Apriori apriori = new Apriori();
 
-        apriori.apriori(students, 0.04);
+
+        List<Integer> antecedent = new ArrayList<>();
+        antecedent.add(581328); // Tikape
+        apriori.ohpeISs(antecedent, students);
+
+        antecedent = new ArrayList<>();
+        antecedent.add(582104); // OTM
+        apriori.ohpeISs(antecedent, students);
+
+        antecedent = new ArrayList<>();
+        antecedent.add(582103); // Ohja
+        apriori.ohpeISs(antecedent, students);
+
+        antecedent = new ArrayList<>();
+        antecedent.add(581328); // Tikape
+        antecedent.add(582103); // Ohja
+        apriori.ohpeISs(antecedent, students);
+
+        antecedent = new ArrayList<>();
+        antecedent.add(582103); // Ohja
+        antecedent.add(582104); // OTM
+        apriori.ohpeISs(antecedent, students);
+
+        //apriori.ohpeLowRules(students);
+
+        //apriori.apriori(students, 0.04);
 
         //sequentialApriori(students, 2, 5, 0.0);
         //sequentialApriori(students, 8, 5, 0.0);

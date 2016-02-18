@@ -37,13 +37,20 @@ public class Apriori {
                 bestCombinations.addAll(courses);
             }
 
+            // TEMP
+            for (List<Integer> combination : bestCombinations) {
+                System.out.println(print(combination, students));
+            }
+            // END TEMP
 
             n++;
         }
 
-        for (List<Integer> combination : bestCombinations) {
-            print(combination, students);
-        }
+        // TEMP COMMENTED
+//        for (List<Integer> combination : bestCombinations) {
+//            System.out.println(print(combination, students));
+//        }
+        // END TEMP COMMENTED
     }
 
     public String print(List<Integer> courseList, List<Student> students) {
@@ -165,6 +172,7 @@ public class Apriori {
 
     public List<List<Integer>> prune(List<List<Integer>> combinations) {
         List<List<Integer>> response = new ArrayList<>();
+        if (combinations.size() == 0) return response;
         int k = combinations.get(0).size();
         List<List<Integer>> previousFrequents = frequents.get(k-1);
         for (List<Integer> combination : combinations) {
@@ -194,6 +202,64 @@ public class Apriori {
             subsets.add(copy);
         }
         return subsets;
+    }
+
+
+    // RULE GENERATION
+
+    public void ohpeHighRules(List<Student> students) {
+        int ohpeCode = 581325;
+        List<Student> studentsWithOhpe = students.parallelStream().filter(student -> student.getCourses().parallelStream().map(Course::getCode).collect(Collectors.toList()).contains(ohpeCode)).collect(Collectors.toList());
+        apriori(studentsWithOhpe, 0.6);
+    }
+
+    public void ohpeHighConfidenceRules(List<Integer> antecedent, List<Student> transactions) {
+        List<Integer> consequent = new ArrayList<>();
+        consequent.add(581325);
+        System.out.println(confidence(antecedent, consequent, transactions));
+    }
+
+    public void ohpeLifts(List<Integer> antecedent, List<Student> transactions) {
+        List<Integer> consequent = new ArrayList<>();
+        consequent.add(581325);
+        System.out.println(lift(antecedent, consequent, transactions));
+    }
+
+    public void ohpeISs(List<Integer> antecedent, List<Student> transactions) {
+        List<Integer> consequent = new ArrayList<>();
+        consequent.add(581325);
+        System.out.println(ISmeasure(antecedent, consequent, transactions));
+    }
+
+    public void ohpeLowRules(List<Student> students) {
+        int ohpeCode = 581325;
+        List<Student> studentsWithOhpe = students.parallelStream().filter(student -> student.getCourses().parallelStream().map(Course::getCode).collect(Collectors.toList()).contains(ohpeCode)).collect(Collectors.toList());
+        apriori(studentsWithOhpe, 0.6);
+    }
+
+    private double confidence(List<Integer> antecedent, List<Integer> consequent, List<Student> transactions) {
+        return 1.0 * support(transactions,union(antecedent, consequent)) / support(transactions, antecedent);
+    }
+
+    private double lift(List<Integer> antecedent, List<Integer> consequent, List<Student> transactions) {
+        return 1.0 * support(transactions, union(antecedent, consequent)) / (support(transactions, antecedent) * support(transactions, consequent));
+    }
+
+    private double ISmeasure(List<Integer> first, List<Integer> second, List<Student> transactions) {
+        return 1.0 * support(transactions, union(first, second)) / Math.sqrt(support(transactions,first) * support(transactions, second));
+    }
+
+
+    private void ruleGeneration() {
+
+    }
+
+    private void apGenRules(List<Integer> itemset, List<Integer> consequent) {
+        int k = itemset.size();
+        int m = consequent.size();
+        if (k > m+1) {
+
+        }
     }
 
 
