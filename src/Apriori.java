@@ -38,8 +38,59 @@ public class Apriori {
             }
 
             // TEMP
+//            for (List<Integer> combination : bestCombinations) {
+//                System.out.println(print(combination, students));
+//            }
+            // END TEMP
+
+            n++;
+        }
+
+        for (List<Integer> combination : bestCombinations) {
+            System.out.println(print(combination, students));
+        }
+    }
+
+
+
+    public void aprioriLowConfidence(List<Student> students, double support) {
+        List<List<Integer>> courses = courses(students);
+        frequents = new HashMap<>();
+        // Initialize frequents with the frequent 1-combinations
+        List<List<Integer>> coursesCopy = new ArrayList<>();
+        coursesCopy.addAll(courses);
+        frequents.put(1, coursesCopy.parallelStream().filter(course -> (support(students, course) >= support)).collect(Collectors.toList()));
+
+        int n = 2;
+        List<List<Integer>> bestCombinations = new ArrayList<>();
+        while (!courses.isEmpty()) {
+            long start = System.currentTimeMillis();
+//            courses = generate(courses).parallelStream().filter(course -> (support(students, course) >= support))
+//                    .collect(Collectors.toList());
+            courses = generate(courses);
+            courses = filterBySupport(students, courses, support);
+            courses = courses.parallelStream().filter(candidate -> candidate.contains(581325)).collect(Collectors.toList());
+
+            long end = System.currentTimeMillis();
+            long time = end - start;
+
+            List<List<Integer>> thisKFrequents = new ArrayList<>();
+            thisKFrequents.addAll(courses);
+            frequents.put(n, thisKFrequents);
+
+            // Print the amount of combinations of size n
+            System.out.println(courses.size() + " combinations of size " + n + ", calculation took " + time + " milliseconds");
+
+            if (courses.size() != 0) {
+                bestCombinations = new ArrayList<>();
+                bestCombinations.addAll(courses);
+            }
+
+            // TEMP
             for (List<Integer> combination : bestCombinations) {
-                System.out.println(print(combination, students));
+                if (combination.contains(581325)) {
+                    System.out.println(print(combination, students));
+                }
             }
             // END TEMP
 
@@ -219,6 +270,12 @@ public class Apriori {
         System.out.println(confidence(antecedent, consequent, transactions));
     }
 
+    public void ohpeConfidences(List<Integer> antecedent, List<Student> transactions) {
+        List<Integer> consequent = new ArrayList<>();
+        consequent.add(581325);
+        System.out.println(confidence(antecedent, consequent, transactions));
+    }
+
     public void ohpeLifts(List<Integer> antecedent, List<Student> transactions) {
         List<Integer> consequent = new ArrayList<>();
         consequent.add(581325);
@@ -234,7 +291,7 @@ public class Apriori {
     public void ohpeLowRules(List<Student> students) {
         int ohpeCode = 581325;
         List<Student> studentsWithOhpe = students.parallelStream().filter(student -> student.getCourses().parallelStream().map(Course::getCode).collect(Collectors.toList()).contains(ohpeCode)).collect(Collectors.toList());
-        apriori(studentsWithOhpe, 0.6);
+        aprioriLowConfidence(studentsWithOhpe, 0.1);
     }
 
     private double confidence(List<Integer> antecedent, List<Integer> consequent, List<Student> transactions) {

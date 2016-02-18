@@ -78,10 +78,7 @@ public class SequentialApriori {
     public boolean sequentialShouldAddUnion(List<List<Integer>> first, List<List<Integer>> second) {
         if (first.size() != second.size() || first.size() == 0) return false;
 
-        List<Integer> flatFirst = flatMap(first);
-        List<Integer> flatSecond = flatMap(second);
-
-        return flatFirst.subList(1, first.size()).equals(flatSecond.subList(0, second.size() - 1));
+        return first.subList(1, first.size()).equals(second.subList(0, second.size() - 1));
     }
 
     public List<List<Integer>> sequentialUnion(List<List<Integer>> first, List<List<Integer>> second) {
