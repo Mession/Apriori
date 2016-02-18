@@ -3,7 +3,7 @@ public class Course implements Comparable<Course> {
         return time;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
@@ -31,7 +31,7 @@ public class Course implements Comparable<Course> {
         return month;
     }
 
-    private String code;
+    private int code;
     private String name;
     private String credits;
     private String grade;
@@ -40,7 +40,7 @@ public class Course implements Comparable<Course> {
         this.time = time;
         this.year = Integer.parseInt(time.split("-")[0]);
         this.month = Integer.parseInt(time.split("-")[1]);
-        this.code = code;
+        this.code = Integer.parseInt(code);
         this.name = name.substring(1,name.length()-1);
         this.credits = credits;
         this.grade = grade;
