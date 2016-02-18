@@ -7,7 +7,7 @@ public class SequentialApriori {
         List<List<List<Integer>>> courses = sequentialCourses(students);
         int n = 1;
         while (!courses.isEmpty()) {
-            courses = sequentialGenerate(courses).parallelStream().filter(course -> (sequentialSupport(students, flatMap(course)) >= support))
+            courses = sequentialGenerate(courses).parallelStream().filter(course -> (sequentialSupport(students, course) >= support))
                     .collect(Collectors.toList());
 
             // Print the amount of combinations of size n
@@ -17,21 +17,21 @@ public class SequentialApriori {
                 double minsup = 0.1;
                 while (courses.size() > 5) {
                     final double finalMinsup = minsup;
-                    courses = courses.parallelStream().filter(course -> (sequentialSupport(students, flatMap(course)) >= finalMinsup))
+                    courses = courses.parallelStream().filter(course -> (sequentialSupport(students, course) >= finalMinsup))
                             .collect(Collectors.toList());
                     minsup += 0.01;
                 }
                 for (List<List<Integer>> courseList : courses) {
-                    System.out.println(print(flatMap(courseList), students));
+                    System.out.println(print(courseList, students));
                 }
                 break;
             }
         }
     }
 
-    public String print(List<Integer> courseList, List<Student> students) {
+    public String print(List<List<Integer>> courseList, List<Student> students) {
         String ret = "Courses: ";
-        for (Integer s : courseList) {
+        for (List<Integer> s : courseList) {
             ret += s;
             ret += " ";
         }
@@ -39,16 +39,17 @@ public class SequentialApriori {
         return ret;
     }
 
-    public double sequentialSupport(List<Student> students, List<Integer> courses) {
-        return (1.0 * students.parallelStream()
-                .filter(student -> {
-                    List<Course> orderedCourses = new ArrayList<>();
-                    orderedCourses.addAll(student.getCourses());
-                    Collections.sort(orderedCourses);
-                    return checkSupport(orderedCourses.parallelStream()
-                            .map(Course::getCode)
-                            .collect(Collectors.toList()), courses);
-                }).count()) / students.size();
+    public double sequentialSupport(List<Student> students, List<List<Integer>> courses) {
+        return 1.0;
+//        return (1.0 * students.parallelStream()
+//                .filter(student -> {
+//                    List<Course> orderedCourses = new ArrayList<>();
+//                    orderedCourses.addAll(student.getCourses());
+//                    Collections.sort(orderedCourses);
+//                    return checkSupport(orderedCourses.parallelStream()
+//                            .map(Course::getCode)
+//                            .collect(Collectors.toList()), courses);
+//                }).count()) / students.size();
     }
 
     public boolean checkSupport(List<Integer> studentCourses, List<Integer> supportFor) {
