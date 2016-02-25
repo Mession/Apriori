@@ -35,6 +35,7 @@ public class Course implements Comparable<Course> {
     private String name;
     private String credits;
     private String grade;
+    private String pass;
 
     public Course(String time, String code, String name, String credits, String grade) {
         this.time = time;
@@ -44,6 +45,7 @@ public class Course implements Comparable<Course> {
         this.name = name.substring(1,name.length()-1);
         this.credits = credits;
         this.grade = grade;
+        this.pass = grade.equals("0") ? "FAIL" : "PASS";
     }
 
     @Override
@@ -52,5 +54,9 @@ public class Course implements Comparable<Course> {
             return this.month - o.getMonth();
         }
         return this.year - o.getYear();
+    }
+
+    public String getPass() {
+        return this.pass;
     }
 }

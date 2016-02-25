@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,75 +10,44 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) throws IOException {
         List<Student> students = students("data-2016.csv");
-        Apriori apriori = new Apriori();
+        int transactions = students.size();
 
-        SequentialApriori seq = new SequentialApriori();
-        seq.sequentialApriori(students,8,0,0.05);
+        int ohpe = 581325;
+        int ohja = 582103;
+        int tira = 58131;
 
+        students = students.parallelStream().filter(student -> student.getRegistrationYear() < 2010).collect(Collectors.toList());
+        students = students.parallelStream().filter(student -> student.getCourseGrades().contains(new CourseGrade(ohpe, "4", null))).collect(Collectors.toList());
+        Categorization categorization = new Categorization(students, transactions);
 
-//        List<Integer> antecedent = new ArrayList<>();
-//        antecedent.add(581328); // Tikape
-//        apriori.ohpeConfidences(antecedent, students);
-//
-//        antecedent = new ArrayList<>();
-//        antecedent.add(582104); // OTM
-//        apriori.ohpeConfidences(antecedent, students);
-//
-//        antecedent = new ArrayList<>();
-//        antecedent.add(582103); // Ohja
-//        apriori.ohpeConfidences(antecedent, students);
-//
-//        antecedent = new ArrayList<>();
-//        antecedent.add(581328); // Tikape
-//        antecedent.add(582103); // Ohja
-//        apriori.ohpeConfidences(antecedent, students);
-//
-//        antecedent = new ArrayList<>();
-//        antecedent.add(582103); // Ohja
-//        antecedent.add(582104); // OTM
-//        apriori.ohpeConfidences(antecedent, students);
+        List<CourseGrade> courseGrades = new ArrayList<>();
+        courseGrades.add(new CourseGrade(tira, "0", null));
+        double zeros = categorization.supportCountFor(courseGrades);
 
-//        List<Integer> antecedent = new ArrayList<>();
-//        System.out.println("Tieteellinen laskenta");
-//        antecedent.add(53398); // Tieteellinen laskenta I
-//        apriori.ohpeConfidences(antecedent, students);
-//        apriori.ohpeLifts(antecedent, students);
-//        apriori.ohpeISs(antecedent, students);
-//
-//        antecedent = new ArrayList<>();
-//        System.out.println("Maailmankaikkeus nyt");
-//        antecedent.add(53905); // Maailmankaikkeus nyt
-//        apriori.ohpeConfidences(antecedent, students);
-//        apriori.ohpeLifts(antecedent, students);
-//        apriori.ohpeISs(antecedent, students);
-//
-//        antecedent = new ArrayList<>();
-//        System.out.println("Arkipäivän fysiikkaa");
-//        antecedent.add(530094); // Arkipäivän fysiikkaa
-//        apriori.ohpeConfidences(antecedent, students);
-//        apriori.ohpeLifts(antecedent, students);
-//        apriori.ohpeISs(antecedent, students);
-//
-//        antecedent = new ArrayList<>();
-//        System.out.println("Lukualueet");
-//        antecedent.add(57027); // Lukualueet
-//        apriori.ohpeConfidences(antecedent, students);
-//        apriori.ohpeLifts(antecedent, students);
-//        apriori.ohpeISs(antecedent, students);
-//
-//        antecedent = new ArrayList<>();
-//        System.out.println("Mitta ja integraali");
-//        antecedent.add(57101); // Mitta ja integraali
-//        apriori.ohpeConfidences(antecedent, students);
-//        apriori.ohpeLifts(antecedent, students);
-//        apriori.ohpeISs(antecedent, students);
+        courseGrades = new ArrayList<>();
+        courseGrades.add(new CourseGrade(tira, "2", null));
+        double twos = categorization.supportCountFor(courseGrades);
 
-        //apriori.ohpeLowRules(students);
+        courseGrades = new ArrayList<>();
+        courseGrades.add(new CourseGrade(tira, "4", null));
+        double fours = categorization.supportCountFor(courseGrades);
 
-        //apriori.apriori(students, 0.04);
+        System.out.println("zeros: " + zeros);
+        System.out.println("twos: " + twos);
+        System.out.println("fours: " + fours);
 
-        //sequentialApriori(students, 2, 5, 0.0);
-        //sequentialApriori(students, 8, 5, 0.0);
+        double mean = 1.0 * (fours * 4.0 + twos * 2.0) / students.size();
+        System.out.println(mean);
+
+//        courseGrades = new ArrayList<>();
+//        courseGrades.add(new CourseGrade(ohpe, "2", null));
+//        courseGrades.add(new CourseGrade(ohja, "2", null));
+//        System.out.println("b) " + categorization.supportFor(courseGrades));
+//
+//        courseGrades = new ArrayList<>();
+//        courseGrades.add(new CourseGrade(ohpe, "4", null));
+//        courseGrades.add(new CourseGrade(ohja, "2", null));
+//        System.out.println("c) " + categorization.supportFor(courseGrades));
     }
 
 
